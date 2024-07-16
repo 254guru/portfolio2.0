@@ -1,12 +1,10 @@
 services:
   - type: web
     name: php-backend
-    env: php
-    buildCommand: composer install
-    startCommand: php -S 0.0.0.0:10000
+    env: docker
+    dockerfilePath: ./Dockerfile
     plan: free
     branch: main
-    rootDir: .
     envVars:
       - key: PHP_VERSION
         value: 8.1
