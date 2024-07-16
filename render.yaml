@@ -1,26 +1,12 @@
 services:
   - type: web
-    name: node-frontend
-    env: node
-    buildCommand: npm install
-    startCommand: npm start
-    envVars:
-      - key: NODE_VERSION
-        value: 20.15.1
-    plan: free
-    branch: main
-    region: oregon
-    autoDeploy: true
-
-  - type: web
     name: php-backend
     env: php
     buildCommand: composer install
     startCommand: php -S 0.0.0.0:10000
+    plan: free
+    branch: main
+    rootDir: .
     envVars:
       - key: PHP_VERSION
         value: 8.1
-    plan: free
-    branch: main
-    region: oregon
-    autoDeploy: true
