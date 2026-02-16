@@ -1,5 +1,18 @@
 'use strict';
 
+// Service Worker Registration for offline caching and performance
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./assets/js/sw.js')
+      .then(function(registration) {
+        console.log('Service Worker registered successfully:', registration);
+      })
+      .catch(function(error) {
+        console.log('Service Worker registration failed:', error);
+      });
+  });
+}
+
 
 
 // element toggle function

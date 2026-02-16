@@ -5,15 +5,34 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- SEO Meta Tags -->
   <meta name="description"
-    content="Welcome to Kevin's personal portfolio website, showcasing his projects, skills, and experiences in web development and design. Explore Kevin's work and get inspired!">
-  <meta property="og:title" content="Kevin">
+    content="Frontend-focused Software Engineer specializing in React, TypeScript, and JavaScript. Expert in building modern, high-performance web applications. View my portfolio and experience.">
+  <meta name="keywords" content="Web Developer, React, TypeScript, JavaScript, Frontend Engineer, Full-Stack Developer, Software Engineer, Web Development">
+  <meta name="author" content="Kevin Oluda">
+  <meta name="theme-color" content="#2C2E50">
+  <link rel="canonical" href="https://kevinoluda.com">
+  
+  <!-- Open Graph Tags -->
+  <meta property="og:title" content="Kevin Oluda - Frontend Software Engineer">
   <meta property="og:description"
-    content="Check out Kevin's amazing portfolio! Discover his latest projects, skills, and experiences in web development and design. Dive into Kevin's world of creativity and innovation.">
-  <meta property="og:image" content="https://i.imgur.com/uGJD2OF.png"> <!-- URL to the image you want to display -->
-  <!-- <meta property="og:url" content="https://kevinoluda.onrender.com/"> URL of your website -->
+    content="Discover my portfolio showcasing React, TypeScript, and JavaScript projects. Expert frontend engineer with full-stack capabilities.">
+  <meta property="og:image" content="https://i.imgur.com/uGJD2OF.png">
   <meta property="og:type" content="website">
-  <title>Kevin Oluda - Personal Portfolio</title>
+  <meta property="og:site_name" content="Kevin Oluda Portfolio">
+  
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Kevin Oluda - Frontend Software Engineer">
+  <meta name="twitter:description" content="Explore my portfolio of React, TypeScript, and JavaScript projects.">
+  <meta name="twitter:image" content="https://i.imgur.com/uGJD2OF.png">
+  <meta name="twitter:creator" content="@oluda_kevin">
+  
+  <!-- Cache Control -->
+  <meta http-equiv="Cache-Control" content="public, max-age=3600">
+  
+  <title>Kevin Oluda - Frontend Software Engineer | React, TypeScript, JavaScript</title>
 
   <!--
     - favicon
@@ -27,6 +46,7 @@
   <!--
     - custom css link
   -->
+  <link rel="preload" href="./assets/css/style.css" as="style">
   <link rel="stylesheet" href="./assets/css/style.css">
 
   <!--
@@ -35,6 +55,44 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <!--
+    - JSON-LD Structured Data for SEO
+  -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Kevin Oluda",
+    "title": "Frontend Software Engineer",
+    "url": "https://kevinoluda.com",
+    "email": "oludakevin@gmail.com",
+    "jobTitle": "Software Developer",
+    "image": "https://i.imgur.com/uGJD2OF.png",
+    "sameAs": [
+      "https://twitter.com/oluda_kevin",
+      "https://www.linkedin.com/in/kevin-oluda-65b848210/"
+    ],
+    "knowsLanguage": [
+      "English"
+    ],
+    "skills": [
+      "React",
+      "TypeScript",
+      "JavaScript",
+      "HTML5",
+      "CSS3",
+      "Node.js",
+      "Python",
+      "REST APIs",
+      "Full-Stack Development"
+    ]
+  }
+  </script>
+
 </head>
 
 <body>
@@ -56,12 +114,12 @@
         <figure class="avatar-box">
           <picture>
             <source srcset="./assets/images/FB_IMG_1641814228743-400.webp 400w, ./assets/images/FB_IMG_1641814228743-800.webp 800w" type="image/webp">
-            <img src="./assets/images/FB_IMG_1641814228743.jpg" alt="Richard hanrick" width="80">
+            <img src="./assets/images/FB_IMG_1641814228743.jpg" alt="Kevin Oluda - Software Engineer" width="80" height="80">
           </picture>
         </figure>
 
         <div class="info-content">
-          <h1 class="name" title="Richard hanrick">Kevin Oluda</h1>
+          <h1 class="name" title="Kevin Oluda">Kevin Oluda</h1>
 
           <p class="title">Software Developer</p>
         </div>
@@ -143,13 +201,13 @@
         <ul class="social-list">
 
           <li class="social-item">
-            <a href="https://x.com/oluda_kevin" class="social-link">
+            <a href="https://x.com/oluda_kevin" class="social-link" aria-label="Twitter">
               <ion-icon name="logo-twitter"></ion-icon>
             </a>
           </li>
 
           <li class="social-item">
-            <a href="https://www.linkedin.com/in/kevin-oluda-65b848210/" class="social-link">
+            <a href="https://www.linkedin.com/in/kevin-oluda-65b848210/" class="social-link" aria-label="LinkedIn">
               <ion-icon name="logo-linkedin"></ion-icon>
             </a>
           </li>
@@ -1753,13 +1811,13 @@
   <!--
     - custom js link
   -->
-  <script src="./assets/js/script.js"></script>
+  <script defer src="./assets/js/script.js"></script>
 
   <!--
-    - ionicon link
+    - ionicon link (deferred for non-critical functionality)
   -->
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script type="module" defer src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule defer src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
 </body>
 

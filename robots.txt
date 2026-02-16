@@ -1,0 +1,9 @@
+User-agent: *
+Disallow:
+
+# Sitemap location (use primary domain)
+Sitemap: https://kevinoluda.com/sitemap.xml
+Host: https://kevinoluda.com
+
+# Crawl-delay for polite crawling (optional; some crawlers ignore it)
+Crawl-delay: 1
