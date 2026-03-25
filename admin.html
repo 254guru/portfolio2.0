@@ -219,9 +219,131 @@
       align-items: flex-start;
     }
     .bio-item textarea { flex: 1; }
+
+    /* ── Login overlay ──────────────────────────────────────────────────────── */
+    #login-overlay {
+      position: fixed;
+      inset: 0;
+      background: #1a1b1e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .login-card {
+      background: #2c2e3a;
+      border: 1px solid #444;
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 360px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .login-card h2 {
+      font-size: 1.3rem;
+      color: #ff6b35;
+      margin: 0;
+    }
+
+    .login-card p {
+      font-size: 0.85rem;
+      color: #888;
+      margin: 0;
+    }
+
+    .login-card input[type="password"] {
+      width: 100%;
+      background: #1a1b1e;
+      border: 1px solid #555;
+      color: #e0e0e0;
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .login-card input[type="password"]:focus { border-color: #ff6b35; }
+
+    #login-submit {
+      width: 100%;
+      padding: 0.65rem;
+      background: #ff6b35;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    #login-submit:hover:not(:disabled) { background: #e55a25; }
+    #login-submit:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .attempt-dots {
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .attempt-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ff6b35;
+      transition: background 0.2s;
+    }
+
+    .attempt-dot.used { background: #555; }
+
+    .lockout-countdown {
+      font-size: 0.82rem;
+      color: #e55a25;
+      text-align: center;
+      padding: 0.4rem 0.6rem;
+      background: rgba(229,90,37,0.1);
+      border-radius: 4px;
+    }
+
+    .login-error {
+      font-size: 0.82rem;
+      color: #e55a25;
+      text-align: center;
+    }
+
+    /* ── Session timer ──────────────────────────────────────────────────────── */
+    #session-timer {
+      font-size: 0.75rem;
+      color: #666;
+      font-variant-numeric: tabular-nums;
+    }
   </style>
 </head>
 <body>
+
+<!-- ── Login overlay ──────────────────────────────────────────────────────── -->
+<div id="login-overlay">
+  <div class="login-card">
+    <h2>⚙ Admin Access</h2>
+    <p>Enter your passphrase to unlock the dashboard</p>
+    <input type="password" id="passphrase-input" placeholder="Passphrase"
+           autocomplete="current-password"
+           onkeydown="if(event.key==='Enter'){attemptLogin();}">
+    <button id="login-submit" onclick="attemptLogin()">Unlock</button>
+    <div class="attempt-dots" id="attempt-dots"></div>
+    <div id="lockout-countdown" class="lockout-countdown" style="display:none;"></div>
+    <div id="login-error" class="login-error" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ── Main dashboard (shown only after authentication) ───────────────────── -->
+<div id="main-content" style="display:none;">
 
 <header>
   <div>
@@ -229,8 +351,10 @@
     <p>Edit data.json — export and replace the file to update your portfolio</p>
   </div>
   <div class="header-actions">
+    <span id="session-timer"></span>
     <button class="btn btn-secondary" onclick="loadData()">↺ Reload</button>
     <button class="btn btn-success" onclick="exportJSON()">⬇ Export data.json</button>
+    <button class="btn btn-danger" onclick="logout()">⏏ Logout</button>
   </div>
 </header>
 
@@ -399,10 +523,219 @@
   </main>
 </div>
 
+</div><!-- /#main-content -->
+
 <div id="toast" class="toast"></div>
 
 <script>
 'use strict';
+
+// ── Security ──────────────────────────────────────────────────────────────────
+// NOTE: All authentication logic runs entirely in the browser (no server calls).
+// This is a convenience access-control layer, not a server-side security boundary.
+// Anyone with local file access could edit this file; deploy behind proper server
+// auth (Basic Auth, OAuth, etc.) if the dashboard is publicly hosted.
+//
+// SHA-256 hash of the admin passphrase (default passphrase: admin2025!)
+// To change: open browser DevTools console and run:
+//   crypto.subtle.digest('SHA-256', new TextEncoder().encode('yourNewPassphrase'))
+//     .then(b => console.log(Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')))
+// Then replace the hash string below with the output.
+var PASSPHRASE_HASH = 'bfeef40817b856c26f72726c841168f09ec41e49c1eedae16ab85298e1010a7f';
+
+var MAX_ATTEMPTS       = 5;
+var LOCKOUT_MS         = 60 * 1000;        // 60 seconds
+var SESSION_MS         = 30 * 60 * 1000;   // 30 minutes
+var SESSION_KEY        = 'adm_sess';
+var LOCKOUT_KEY        = 'adm_lk';
+
+// ── SHA-256 via Web Crypto (no network, no libraries) ─────────────────────────
+async function sha256(text) {
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(function(b) {
+    return b.toString(16).padStart(2, '0');
+  }).join('');
+}
+
+// ── Lockout helpers ───────────────────────────────────────────────────────────
+function getLockout() {
+  try { return JSON.parse(localStorage.getItem(LOCKOUT_KEY)) || {attempts:0, until:0}; }
+  catch(e) { return {attempts:0, until:0}; }
+}
+function saveLockout(s) { localStorage.setItem(LOCKOUT_KEY, JSON.stringify(s)); }
+function clearLockout() { localStorage.removeItem(LOCKOUT_KEY); }
+
+// ── Session helpers ───────────────────────────────────────────────────────────
+var _sessionTimer = null;
+var _sessionDisplayInterval = null;
+
+function sessionIsValid() {
+  var ts = sessionStorage.getItem(SESSION_KEY);
+  return ts && (Date.now() - parseInt(ts, 10)) < SESSION_MS;
+}
+
+function touchSession() {
+  sessionStorage.setItem(SESSION_KEY, Date.now().toString());
+}
+
+function startSession() {
+  touchSession();
+  _resetSessionTimer();
+  ['mousemove','mousedown','keydown','touchstart','scroll'].forEach(function(ev) {
+    document.addEventListener(ev, _onActivity, {passive: true});
+  });
+  _sessionDisplayInterval = setInterval(_updateSessionTimer, 1000);
+  _updateSessionTimer();
+}
+
+function _onActivity() {
+  touchSession();
+  _resetSessionTimer();
+}
+
+function _resetSessionTimer() {
+  clearTimeout(_sessionTimer);
+  _sessionTimer = setTimeout(function() { logout('Session expired due to inactivity.'); }, SESSION_MS);
+}
+
+function _updateSessionTimer() {
+  var el = document.getElementById('session-timer');
+  if (!el) return;
+  var ts = sessionStorage.getItem(SESSION_KEY);
+  if (!ts) { el.textContent = ''; return; }
+  var rem = SESSION_MS - (Date.now() - parseInt(ts, 10));
+  if (rem <= 0) { el.textContent = ''; return; }
+  var m = Math.floor(rem / 60000);
+  var s = Math.floor((rem % 60000) / 1000);
+  el.textContent = 'Session: ' + m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function logout(msg) {
+  clearTimeout(_sessionTimer);
+  clearInterval(_sessionDisplayInterval);
+  sessionStorage.removeItem(SESSION_KEY);
+  ['mousemove','mousedown','keydown','touchstart','scroll'].forEach(function(ev) {
+    document.removeEventListener(ev, _onActivity);
+  });
+  _showLogin(msg || '');
+}
+
+// ── Login overlay UI ──────────────────────────────────────────────────────────
+var _lockoutInterval = null;
+
+function _showLogin(message) {
+  document.getElementById('login-overlay').style.display = 'flex';
+  document.getElementById('main-content').style.display = 'none';
+  document.getElementById('passphrase-input').value = '';
+  var errEl = document.getElementById('login-error');
+  errEl.textContent = message;
+  errEl.style.display = message ? 'block' : 'none';
+  _renderDots();
+  _checkLockoutUI();
+}
+
+function _hideLogin() {
+  document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('main-content').style.display = '';
+}
+
+function _renderDots() {
+  var state = getLockout();
+  var html = '';
+  for (var i = 0; i < MAX_ATTEMPTS; i++) {
+    html += '<span class="attempt-dot' + (i < state.attempts ? ' used' : '') + '"></span>';
+  }
+  document.getElementById('attempt-dots').innerHTML = html;
+}
+
+function _checkLockoutUI() {
+  var state = getLockout();
+  if (state.until && Date.now() < state.until) {
+    _startLockoutUI(state.until);
+    return true;
+  }
+  _enableLoginForm(true);
+  return false;
+}
+
+function _enableLoginForm(enabled) {
+  document.getElementById('passphrase-input').disabled = !enabled;
+  document.getElementById('login-submit').disabled    = !enabled;
+  if (enabled) document.getElementById('passphrase-input').focus();
+}
+
+function _startLockoutUI(until) {
+  _enableLoginForm(false);
+  var countEl = document.getElementById('lockout-countdown');
+  clearInterval(_lockoutInterval);
+  _lockoutInterval = setInterval(function() {
+    var rem = Math.ceil((until - Date.now()) / 1000);
+    if (rem <= 0) {
+      clearInterval(_lockoutInterval);
+      var st = getLockout();
+      st.attempts = 0;
+      st.until = 0;
+      saveLockout(st);
+      _enableLoginForm(true);
+      countEl.style.display = 'none';
+      document.getElementById('login-error').style.display = 'none';
+      _renderDots();
+    } else {
+      countEl.textContent = 'Too many attempts. Try again in ' + rem + 's';
+      countEl.style.display = 'block';
+    }
+  }, 1000);
+}
+
+async function attemptLogin() {
+  var state = getLockout();
+  if (state.until && Date.now() < state.until) return;
+
+  var passphrase = document.getElementById('passphrase-input').value;
+  if (!passphrase) return;
+
+  var hash = await sha256(passphrase);
+
+  if (hash === PASSPHRASE_HASH) {
+    clearLockout();
+    clearInterval(_lockoutInterval);
+    document.getElementById('lockout-countdown').style.display = 'none';
+    _hideLogin();
+    startSession();
+    loadData();
+  } else {
+    state.attempts = (state.attempts || 0) + 1;
+    if (state.attempts >= MAX_ATTEMPTS) {
+      state.until = Date.now() + LOCKOUT_MS;
+    }
+    saveLockout(state);
+    _renderDots();
+    if (state.until && Date.now() < state.until) {
+      _startLockoutUI(state.until);
+    } else {
+      var rem = MAX_ATTEMPTS - state.attempts;
+      var errEl = document.getElementById('login-error');
+      errEl.textContent = 'Incorrect passphrase. ' + rem + ' attempt' + (rem === 1 ? '' : 's') + ' remaining.';
+      errEl.style.display = 'block';
+      document.getElementById('passphrase-input').value = '';
+      document.getElementById('passphrase-input').focus();
+    }
+  }
+}
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
+(function init() {
+  if (sessionIsValid()) {
+    _hideLogin();
+    startSession();
+    // Defer loadData until after the rest of the script has been parsed
+    setTimeout(function() { loadData(); }, 0);
+  } else {
+    _showLogin('');
+  }
+}());
+
+// ── End of Security ───────────────────────────────────────────────────────────
 
 let portfolioData = null;
 
@@ -924,7 +1257,8 @@ function exportJSON() {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-loadData();
+// loadData() is called automatically after successful login (see attemptLogin)
+// and can also be triggered by the ↺ Reload button once authenticated.
 </script>
 </body>
 </html>
