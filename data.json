@@ -1,0 +1,435 @@
+{
+  "about": {
+    "name": "Kevin Oluda",
+    "title": "Software Developer",
+    "avatar": {
+      "webp": "./assets/images/FB_IMG_1641814228743",
+      "fallback": "./assets/images/FB_IMG_1641814228743.jpg",
+      "alt": "Kevin Oluda - Software Engineer"
+    },
+    "bio": [
+      "Frontend‑focused Software Engineer with strong experience building modern, high‑performance web applications using React, TypeScript, and JavaScript. Proven ability to translate UI/UX designs into clean, scalable, and accessible interfaces while collaborating closely with backend teams using Node.js and Python (Flask).",
+      "Experienced across startups, freelancing, and agency environments, delivering production‑ready solutions, leading small teams, and integrating AI‑driven workflows. Passionate about frontend architecture, reusable components, and user‑centric design."
+    ],
+    "email": "oludakevin@gmail.com",
+    "phone": "+254 743 707 128",
+    "phoneHref": "+254743707128",
+    "birthday": {
+      "datetime": "2000-09-09",
+      "display": "Sep 09, 2000"
+    },
+    "location": "Nairobi, Kenya",
+    "social": [
+      {
+        "name": "Twitter",
+        "url": "https://x.com/oluda_kevin",
+        "icon": "logo-twitter"
+      },
+      {
+        "name": "LinkedIn",
+        "url": "https://www.linkedin.com/in/kevin-oluda-65b848210/",
+        "icon": "logo-linkedin"
+      }
+    ]
+  },
+  "services": [
+    {
+      "icon": "./assets/images/icon-app.svg",
+      "iconAlt": "mobile app icon",
+      "title": "Automations",
+      "description": "Professional development of APIs, bots and scripts for various functionalities and platforms."
+    },
+    {
+      "icon": "./assets/images/icon-dev.svg",
+      "iconAlt": "Web development icon",
+      "title": "Web development",
+      "description": "High-quality development of sites at the professional level."
+    },
+    {
+      "icon": "./assets/images/icon-design.svg",
+      "iconAlt": "design icon",
+      "title": "Web design",
+      "description": "The most modern and high-quality figma and wordpress design made at a professional level."
+    },
+    {
+      "icon": "./assets/images/icon-photo.svg",
+      "iconAlt": "photography icon",
+      "title": "Technical Writing",
+      "description": "I write insightful programming articles on medium at a professional level."
+    }
+  ],
+  "education": [
+    {
+      "title": "Certificate – Full‑Stack Software Engineering",
+      "period": "Jan 2023 — Jan 2024",
+      "description": "ALX Africa Full-Stack Software Engineering program. Comprehensive training in software development including full-stack web development, data structures, algorithms, and software engineering best practices."
+    },
+    {
+      "title": "Certificate – Software Development",
+      "period": "Jan 2022 — Jan 2023",
+      "description": "Moringa School intensive software development bootcamp. Mastered full-stack web development with HTML, CSS, JavaScript, React, Flask, and database design."
+    }
+  ],
+  "experience": [
+    {
+      "title": "Technical Writer",
+      "period": "Jan 2024 — Present",
+      "description": "Creating technical documentation and guides for software development topics. Specializing in API documentation, tutorials, and developer guides. Sharing knowledge through self-published content and industry publications."
+    },
+    {
+      "title": "Web Developer",
+      "period": "Aug 2025 — Jan 2026",
+      "description": "Escrow Courier Limited (On-site). Developed and maintained responsive web applications using React and modern JavaScript frameworks. Collaborated with cross-functional teams to implement features and optimize user experience for e-commerce platform."
+    },
+    {
+      "title": "AI Agent Developer",
+      "period": "Jan 2025 — May 2025",
+      "description": "Tublian (Remote, Part-time). Developed AI agents and autonomous systems using LLMs and agent frameworks. Implemented prompt engineering, fine-tuning, and integration of AI models into production applications."
+    },
+    {
+      "title": "Lead Software Developer",
+      "period": "Ongoing",
+      "description": "Collark Designers (On-site). Leading software development projects and mentoring junior developers. Architecting scalable solutions and implementing best practices in code quality and project management."
+    },
+    {
+      "title": "Web Developer Freelance",
+      "period": "Jan 2023 — Jan 2025",
+      "description": "Fiverr (Remote). Built custom websites and web applications for diverse clients. Specialized in React, responsive design, and full-stack development. Achieved high client satisfaction ratings with over 50+ successful projects."
+    },
+    {
+      "title": "Administrative & Technical Assistant",
+      "period": "Jan 2023 — Dec 2024",
+      "description": "Freelance (Remote). Provided technical support, administrative assistance, and data management. Handled client communication, documentation, and technical troubleshooting across multiple projects."
+    }
+  ],
+  "skills": [
+    { "name": "React", "level": 85 },
+    { "name": "TypeScript", "level": 80 },
+    { "name": "JavaScript (ES6+)", "level": 85 },
+    { "name": "HTML5 & CSS3", "level": 90 },
+    { "name": "Node.js", "level": 75 },
+    { "name": "Python (Flask)", "level": 80 },
+    { "name": "RESTful APIs", "level": 85 },
+    { "name": "Git/GitHub", "level": 85 },
+    { "name": "Responsive Design", "level": 85 },
+    { "name": "AI-assisted Development", "level": 80 }
+  ],
+  "servicesPage": {
+    "intro": "Building high-performance web systems for growth. From scalable frontend architecture to AI-powered applications, I help businesses ship reliable and future-ready software.",
+    "cards": [
+      {
+        "title": "Frontend Architecture & React",
+        "items": [
+          "Scalable component systems",
+          "Performance optimization",
+          "Refactoring legacy React apps",
+          "Accessible UI systems"
+        ]
+      },
+      {
+        "title": "AI Integration & Automation",
+        "items": [
+          "GPT-powered assistants",
+          "AI dashboards",
+          "Workflow automation",
+          "Data-driven features"
+        ]
+      },
+      {
+        "title": "Full-Stack MVP Development",
+        "items": [
+          "React + Flask / Node applications",
+          "Authentication & role-based systems",
+          "REST API integrations",
+          "Deployment & production setup"
+        ]
+      },
+      {
+        "title": "Technical Partnership",
+        "items": [
+          "Feature expansion",
+          "Maintenance & optimization",
+          "Architecture advisory",
+          "Performance monitoring"
+        ]
+      }
+    ],
+    "idealClients": [
+      "Early-stage startups building MVPs",
+      "Businesses modernizing legacy systems",
+      "Founders integrating AI into products",
+      "Teams needing frontend expertise"
+    ]
+  },
+  "projects": [
+    {
+      "title": "job-market-intelligence-dashboard",
+      "url": "https://github.com/254guru/job-market-dashboard",
+      "image": "./assets/images/jmdashboard.png",
+      "webp": "./assets/images/jmdashboard",
+      "alt": "job-market-dashboard",
+      "category": "Applications",
+      "filterCategory": "web development"
+    },
+    {
+      "title": "Fine-Tuning-Model",
+      "url": "https://github.com/254guru/Fine-Tuning-Model",
+      "image": "./assets/images/ftmodel.png",
+      "webp": "./assets/images/ftmodel",
+      "alt": "Fine-Tuning-Model",
+      "category": "Applications",
+      "filterCategory": "web development"
+    },
+    {
+      "title": "8020 Transcriber",
+      "url": "https://github.com/254guru/8020-Transcriber",
+      "image": "./assets/images/yts.png",
+      "webp": "./assets/images/yts",
+      "alt": "youtube transcriber",
+      "category": "Applications",
+      "filterCategory": "web development"
+    },
+    {
+      "title": "EHRS website",
+      "url": "https://mamas-joy.onrender.com/",
+      "image": "./assets/images/mamajoylandingpage.png",
+      "webp": "./assets/images/mamajoylandingpage",
+      "alt": "EHRS",
+      "category": "Web development",
+      "filterCategory": "web development"
+    },
+    {
+      "title": "E-commerce website",
+      "url": "https://greenmart-ak9w.onrender.com/",
+      "image": "./assets/images/greenmarthomepage.png",
+      "webp": "./assets/images/greenmarthomepage",
+      "alt": "E-commerce platform",
+      "category": "Web development",
+      "filterCategory": "web development"
+    },
+    {
+      "title": "sign-in/sign-up",
+      "url": "https://254guru.github.io/Creative_login_form-1/",
+      "image": "./assets/images/image-1.png",
+      "webp": "./assets/images/image-1",
+      "alt": "forms",
+      "category": "Web design",
+      "filterCategory": "web design"
+    },
+    {
+      "title": "Basic calculator",
+      "url": "https://codsoft-6lc0.onrender.com",
+      "image": "./assets/images/basiccalculator.png",
+      "webp": "./assets/images/basiccalculator",
+      "alt": "calculator",
+      "category": "Applications",
+      "filterCategory": "applications"
+    },
+    {
+      "title": "Age calculator",
+      "url": "https://254guru.github.io/Age-calculator-app/",
+      "image": "./assets/images/image-2.png",
+      "webp": "./assets/images/image-2",
+      "alt": "Age-calculator-app",
+      "category": "Applications",
+      "filterCategory": "applications"
+    },
+    {
+      "title": "Login form",
+      "url": "https://254guru.github.io/Hacker_login_form/",
+      "image": "./assets/images/image-3.png",
+      "webp": "./assets/images/image-3",
+      "alt": "forms",
+      "category": "Web design",
+      "filterCategory": "web design"
+    },
+    {
+      "title": "QR Code component",
+      "url": "https://254guru.github.io/QR-code-component/",
+      "image": "./assets/images/qrcode component.png",
+      "webp": "./assets/images/qrcode component",
+      "alt": "QR-code-component",
+      "category": "Web design",
+      "filterCategory": "web design"
+    },
+    {
+      "title": "password generator",
+      "url": "https://github.com/254guru/password-generator",
+      "image": "./assets/images/password generator.png",
+      "webp": "./assets/images/password generator",
+      "alt": "password generator",
+      "category": "Applications",
+      "filterCategory": "applications"
+    },
+    {
+      "title": "Advice Generator",
+      "url": "https://254guru.github.io/Advice-Generator-App/",
+      "image": "./assets/images/advicegenerator.png",
+      "webp": "./assets/images/advicegenerator",
+      "alt": "Advice-Generator-App",
+      "category": "Applications",
+      "filterCategory": "applications"
+    }
+  ],
+  "blog": [
+    {
+      "title": "A Guide to NextAuth, Router Prefixes & Secure User Routing",
+      "url": "https://medium.com/@oludakevin/next-js-auth-the-right-way-a-guide-to-nextauth-router-prefixes-secure-user-routing-7846b1f13e94",
+      "image": "./assets/images/nextjsauth-therightway.png",
+      "webp": "./assets/images/nextjsauth-therightway",
+      "alt": "next-js-auth-the-right-way-a-guide-to-nextauth-router-prefixes-secure-user-routing",
+      "category": "web development",
+      "datetime": "2025-07-05",
+      "date": "Jul 05, 2025",
+      "excerpt": "This is a practical, developer-focused how-to article to help you avoid the gotchas and ship a secure, scalable auth setup."
+    },
+    {
+      "title": "How to Build a Chrome Extension",
+      "url": "https://medium.com/@oludakevin/how-to-build-a-chrome-extension-73fc4ca82504",
+      "image": "./assets/images/chrome-extension.png",
+      "webp": "./assets/images/chrome-extension",
+      "alt": "how to build a chrome extension",
+      "category": "Applications",
+      "datetime": "2025-02-21",
+      "date": "Feb 21, 2025",
+      "excerpt": "Building a Chrome extension involves creating a small software program that runs in the Google Chrome browser to extend its functionality or enhance the user's experience."
+    },
+    {
+      "title": "How to Dual-Boot Windows with Ubuntu: A Step-by-Step Guide",
+      "url": "https://medium.com/@oludakevin/how-to-dual-boot-windows-with-ubuntu-a-step-by-step-guide-4444e5ba02d9",
+      "image": "./assets/images/DualBooting.jpg",
+      "webp": "./assets/images/DualBooting",
+      "alt": "DualBooting",
+      "category": "Applications",
+      "datetime": "2025-02-05",
+      "date": "Feb 05, 2025",
+      "excerpt": "Dual-booting Windows and Ubuntu allows you to leverage the strengths of both operating systems on a single machine. This guide provides a comprehensive, step-by-step approach to setting up a dual-boot system."
+    },
+    {
+      "title": "Advanced Features for Flask RBAC Implementation",
+      "url": "https://medium.com/p/e230a0f0723f",
+      "image": "./assets/images/advancedRBAC.webp",
+      "alt": "Advanced RBAC",
+      "category": "web development",
+      "datetime": "2024-12-17",
+      "date": "Dec 17, 2024",
+      "excerpt": "an expanded section on Error Handling and Advanced Role Structures to enhance the Role-Based Access Control (RBAC) implementation in Flask."
+    },
+    {
+      "title": "Scaling Flask-SocketIO Applications",
+      "url": "https://medium.com/p/e230a0f0723f",
+      "image": "./assets/images/scalingflasksktIO.webp",
+      "alt": "scaling flask socketIO",
+      "category": "web development",
+      "datetime": "2024-12-10",
+      "date": "Dec 10, 2024",
+      "excerpt": "Scaling and securing real-time Flask-SocketIO applications requires thoughtful implementation of tools like Redis, NGINX, HTTPS, JWT, and rate limiting"
+    },
+    {
+      "title": "Real-Time Data Streaming with Flask and Socket.IO",
+      "url": "https://medium.com/@oludakevin/real-time-data-streaming-with-flask-and-socket-io-bec6d703952f",
+      "image": "./assets/images/flasksocketio.webp",
+      "alt": "Flask-SocketIO",
+      "category": "web development",
+      "datetime": "2024-12-04",
+      "date": "Dec 04, 2024",
+      "excerpt": "Unlike traditional HTTP requests, where the client initiates a request and the server responds, WebSockets enable bi-directional communication, making it possible to push updates from the server to the client as they happen."
+    },
+    {
+      "title": "Getting Started with React",
+      "url": "https://medium.com/@oludakevin/getting-started-with-react-a-beginners-guide-to-building-your-first-app-825b71766a88",
+      "image": "./assets/images/reactjs.webp",
+      "alt": "reactjs",
+      "category": "web development",
+      "datetime": "2024-11-18",
+      "date": "Nov 18, 2024",
+      "excerpt": "React is one of the most popular JavaScript libraries for building user interfaces. Known for its flexibility and powerful features, React makes it easy to create interactive web applications."
+    },
+    {
+      "title": "Implementing Role-Based Access Control (RBAC)",
+      "url": "https://medium.com/@oludakevin/implementing-role-based-access-control-rbac-in-flask-f7e69db698f6",
+      "image": "./assets/images/RBAC.png",
+      "webp": "./assets/images/RBAC",
+      "alt": "RBAC",
+      "category": "web development",
+      "datetime": "2024-10-30",
+      "date": "Oct 30, 2024",
+      "excerpt": "In this article, we'll go over how to implement RBAC in a Flask application, using basic authentication, user roles, and access control decorators."
+    },
+    {
+      "title": "Implementing Flask Security Best Practices",
+      "url": "https://medium.com/@oludakevin/implementing-flask-security-best-practices-4e6a4c7b1fd0",
+      "image": "./assets/images/flasksecurity.webp",
+      "alt": "flasksecurity",
+      "category": "web development",
+      "datetime": "2024-08-13",
+      "date": "Aug 13, 2024",
+      "excerpt": "This article will cover several best practices to help you secure your Flask application, including preventing SQL injection, Cross-Site Scripting (XSS), Cross-Site Request Forgery (CSRF), and other security measures."
+    },
+    {
+      "title": "Organizing your Flask Application with Blueprints",
+      "url": "https://medium.com/@oludakevin/organizing-your-flask-application-with-blueprints-78e14f9648f3",
+      "image": "./assets/images/blueprints.png",
+      "webp": "./assets/images/blueprints",
+      "alt": "flask-blueprints",
+      "category": "web development",
+      "datetime": "2024-07-22",
+      "date": "Jul 22, 2024",
+      "excerpt": "managing the increasing number of routes and modules can become cumbersome. Flask Blueprints offers a way to organize your application into modular components, improving maintainability and scalability."
+    },
+    {
+      "title": "Integrating Flask with React",
+      "url": "https://medium.com/@oludakevin/integrating-flask-with-react-ad6ccdf8c759",
+      "image": "./assets/images/flaskwithreactimg2.jpg",
+      "webp": "./assets/images/flaskwithreactimg2",
+      "alt": "integrating-flask-with-react",
+      "category": "web development",
+      "datetime": "2024-07-15",
+      "date": "Jul 15, 2024",
+      "excerpt": "In this tutorial, we'll explore how to integrate a Flask backend with a React frontend. This combination leverages Flask's simplicity and React's dynamic UI capabilities to build a full-stack web application."
+    },
+    {
+      "title": "Using Flask with SQLAlchemy for Database Integration",
+      "url": "https://medium.com/@oludakevin/using-flask-with-sqlalchemy-for-database-integration-f2d7182ef0f1",
+      "image": "./assets/images/flask-sqlalchemy-tutorial.jpg",
+      "webp": "./assets/images/flask-sqlalchemy-tutorial",
+      "alt": "flask-sqlalchemy-tutorial",
+      "category": "web development",
+      "datetime": "2024-07-06",
+      "date": "Jul 06, 2024",
+      "excerpt": "In this article, we'll explore how to integrate a database into a Flask application using SQLAlchemy. SQLAlchemy is a powerful SQL toolkit and Object-Relational Mapping (ORM) library for Python that makes database interactions much easier."
+    },
+    {
+      "title": "Building REST APIs with Flask",
+      "url": "https://medium.com/@oludakevin/building-rest-apis-with-flask-84ae96e2a88f",
+      "image": "./assets/images/flaskimage.webp",
+      "alt": "flask image",
+      "category": "web development",
+      "datetime": "2024-05-29",
+      "date": "Jun 29, 2024",
+      "excerpt": "This tutorial will create a simple REST API using Flask, a lightweight and popular Python web framework. By the end of this article, you'll have a basic understanding of how to build and run a REST API."
+    },
+    {
+      "title": "From URL to Content",
+      "url": "https://medium.com/@oludakevin/demystifying-the-journey-of-a-web-request-from-url-to-content-6eff6ed30765",
+      "image": "./assets/images/image.png",
+      "webp": "./assets/images/image",
+      "alt": "google lens",
+      "category": "web development",
+      "datetime": "2024-02-29",
+      "date": "Feb 29, 2024",
+      "excerpt": "The journey of a web request involves a series of intricate steps that seamlessly occur in the background to deliver the content you requested."
+    },
+    {
+      "title": "Empowering Mothers Through Digital Maternal Healthcare",
+      "url": "https://medium.com/@oludakevin/mamas-joy-empowering-mothers-through-digital-maternal-healthcare-8a27bdd3a0bd",
+      "image": "./assets/images/Mama's Joy.png",
+      "webp": "./assets/images/Mama's Joy",
+      "alt": "Mama's joy logo",
+      "category": "web development",
+      "datetime": "2024-02-20",
+      "date": "Feb 20, 2024",
+      "excerpt": "this cutting-edge platform seeks to modernize antenatal care processes, offering seamless access to information and empowerment through timely reminders and comprehensive record-keeping."
+    }
+  ]
+}

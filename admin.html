@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Admin Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #1a1b1e;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #2c2e3a;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #ff6b35;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 { font-size: 1.4rem; color: #ff6b35; }
+    header p { font-size: 0.8rem; color: #888; }
+
+    .header-actions { display: flex; gap: 0.75rem; }
+
+    .container { display: flex; min-height: calc(100vh - 65px); }
+
+    nav.sidebar {
+      width: 220px;
+      background: #23242d;
+      padding: 1.5rem 0;
+      border-right: 1px solid #333;
+      flex-shrink: 0;
+      position: sticky;
+      top: 65px;
+      height: calc(100vh - 65px);
+      overflow-y: auto;
+    }
+
+    nav.sidebar ul { list-style: none; }
+    nav.sidebar li a {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    nav.sidebar li a:hover, nav.sidebar li a.active {
+      color: #ff6b35;
+      border-left-color: #ff6b35;
+      background: rgba(255,107,53,0.08);
+    }
+
+    main { flex: 1; padding: 2rem; overflow-y: auto; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .section-title {
+      font-size: 1.3rem;
+      color: #ff6b35;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #333;
+    }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 0.35rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    input[type="number"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 100%;
+      background: #2c2e3a;
+      border: 1px solid #444;
+      color: #e0e0e0;
+      padding: 0.55rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #ff6b35;
+    }
+    textarea { resize: vertical; min-height: 80px; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+    .card {
+      background: #23242d;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .card-header h3 { font-size: 0.95rem; color: #ccc; }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: #ff6b35; color: #fff; }
+    .btn-secondary { background: #3a3b4a; color: #ccc; }
+    .btn-danger { background: #c0392b; color: #fff; }
+    .btn-success { background: #27ae60; color: #fff; }
+    .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.78rem; }
+
+    .add-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .items-container { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .tag {
+      background: #3a3b4a;
+      border: 1px solid #555;
+      border-radius: 20px;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .tag button {
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0;
+    }
+    .tag button:hover { color: #c0392b; }
+
+    .tag-input-row { display: flex; gap: 0.5rem; }
+    .tag-input-row input { flex: 1; }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #27ae60;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: #c0392b; }
+
+    .skill-level-row { display: flex; gap: 0.5rem; align-items: center; }
+    .skill-level-row input[type="number"] { width: 80px; }
+    .skill-level-bar {
+      flex: 1;
+      height: 8px;
+      background: #3a3b4a;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .skill-level-bar-fill {
+      height: 100%;
+      background: #ff6b35;
+      transition: width 0.3s;
+    }
+
+    .divider { border: none; border-top: 1px solid #333; margin: 1.5rem 0; }
+
+    .loading { color: #888; text-align: center; padding: 2rem; }
+
+    .bio-item {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+    .bio-item textarea { flex: 1; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>⚙ Portfolio Admin</h1>
+    <p>Edit data.json — export and replace the file to update your portfolio</p>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-secondary" onclick="loadData()">↺ Reload</button>
+    <button class="btn btn-success" onclick="exportJSON()">⬇ Export data.json</button>
+  </div>
+</header>
+
+<div class="container">
+  <nav class="sidebar">
+    <ul id="nav-links">
+      <li><a href="#" class="active" data-section="about">About / Contact</a></li>
+      <li><a href="#" data-section="services-about">Services (About Page)</a></li>
+      <li><a href="#" data-section="education">Education</a></li>
+      <li><a href="#" data-section="experience">Experience</a></li>
+      <li><a href="#" data-section="skills">Skills</a></li>
+      <li><a href="#" data-section="services-page">Services Page</a></li>
+      <li><a href="#" data-section="projects">Projects</a></li>
+      <li><a href="#" data-section="blog">Blog Posts</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div id="loading" class="loading">Loading data.json…</div>
+
+    <!-- ABOUT -->
+    <section id="section-about" class="section">
+      <h2 class="section-title">About / Contact Info</h2>
+      <div class="card">
+        <div class="row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="about-name">
+          </div>
+          <div class="form-group">
+            <label>Job Title</label>
+            <input type="text" id="about-title">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="about-email">
+          </div>
+          <div class="form-group">
+            <label>Phone (display, e.g. +254 743 707 128)</label>
+            <input type="text" id="about-phone">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label>Phone href (digits only, e.g. +254743707128)</label>
+            <input type="text" id="about-phoneHref">
+          </div>
+          <div class="form-group">
+            <label>Location</label>
+            <input type="text" id="about-location">
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label>Birthday (datetime, e.g. 2000-09-09)</label>
+            <input type="text" id="about-birthday-datetime">
+          </div>
+          <div class="form-group">
+            <label>Birthday (display, e.g. Sep 09, 2000)</label>
+            <input type="text" id="about-birthday-display">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Avatar Image</h3>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label>Fallback image path (jpg/png)</label>
+            <input type="text" id="about-avatar-fallback">
+          </div>
+          <div class="form-group">
+            <label>WebP base path (without -400.webp/-800.webp)</label>
+            <input type="text" id="about-avatar-webp">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Alt text</label>
+          <input type="text" id="about-avatar-alt">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Bio Paragraphs</h3>
+          <button class="btn btn-secondary btn-sm" onclick="addBioParagraph()">+ Add paragraph</button>
+        </div>
+        <div id="bio-paragraphs" class="items-container"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Social Links</h3>
+          <button class="btn btn-secondary btn-sm" onclick="addSocialLink()">+ Add link</button>
+        </div>
+        <div id="social-links" class="items-container"></div>
+      </div>
+    </section>
+
+    <!-- SERVICES (ABOUT PAGE) -->
+    <section id="section-services-about" class="section">
+      <h2 class="section-title">Services — "What I'm doing" (About Page)</h2>
+      <div class="items-container" id="services-about-items"></div>
+      <button class="btn btn-secondary add-btn" onclick="addServiceAbout()">+ Add service</button>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="section-education" class="section">
+      <h2 class="section-title">Education</h2>
+      <div class="items-container" id="education-items"></div>
+      <button class="btn btn-secondary add-btn" onclick="addTimelineItem('education')">+ Add education</button>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="section-experience" class="section">
+      <h2 class="section-title">Experience</h2>
+      <div class="items-container" id="experience-items"></div>
+      <button class="btn btn-secondary add-btn" onclick="addTimelineItem('experience')">+ Add experience</button>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="section-skills" class="section">
+      <h2 class="section-title">Skills</h2>
+      <div class="items-container" id="skills-items"></div>
+      <button class="btn btn-secondary add-btn" onclick="addSkill()">+ Add skill</button>
+    </section>
+
+    <!-- SERVICES PAGE -->
+    <section id="section-services-page" class="section">
+      <h2 class="section-title">Services Page</h2>
+      <div class="card">
+        <div class="form-group">
+          <label>Intro Text</label>
+          <textarea id="services-page-intro" rows="3"></textarea>
+        </div>
+      </div>
+      <h3 style="color:#ccc; margin-bottom:0.75rem;">Service Cards</h3>
+      <div class="items-container" id="services-page-cards"></div>
+      <button class="btn btn-secondary add-btn" onclick="addServiceCard()">+ Add card</button>
+      <hr class="divider">
+      <h3 style="color:#ccc; margin-bottom:0.75rem;">Ideal Clients</h3>
+      <div id="ideal-clients-tags" class="tag-list"></div>
+      <div class="tag-input-row" style="margin-top:0.75rem;">
+        <input type="text" id="ideal-client-input" placeholder="Add a client type…" onkeydown="if(event.key==='Enter'){addIdealClient();}">
+        <button class="btn btn-secondary btn-sm" onclick="addIdealClient()">Add</button>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="section-projects" class="section">
+      <h2 class="section-title">Projects</h2>
+      <div class="items-container" id="projects-items"></div>
+      <button class="btn btn-secondary add-btn" onclick="addProject()">+ Add project</button>
+    </section>
+
+    <!-- BLOG -->
+    <section id="section-blog" class="section">
+      <h2 class="section-title">Blog Posts</h2>
+      <div class="items-container" id="blog-items"></div>
+      <button class="btn btn-secondary add-btn" onclick="addBlogPost()">+ Add blog post</button>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+'use strict';
+
+let portfolioData = null;
+
+// ── Navigation ──────────────────────────────────────────────────────────────
+document.querySelectorAll('#nav-links a').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelectorAll('#nav-links a').forEach(function(a) { a.classList.remove('active'); });
+    this.classList.add('active');
+    document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('section-' + this.dataset.section).classList.add('active');
+  });
+});
+
+// ── Toast ────────────────────────────────────────────────────────────────────
+function showToast(msg, isError) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '') + ' show';
+  setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
+
+// ── Load data ────────────────────────────────────────────────────────────────
+async function loadData() {
+  document.getElementById('loading').style.display = 'block';
+  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+  try {
+    var res = await fetch('./data.json?_=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    portfolioData = await res.json();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('section-about').classList.add('active');
+    renderAllSections();
+    showToast('data.json loaded successfully');
+  } catch (err) {
+    document.getElementById('loading').textContent = 'Error: ' + err.message + '. Open this file via a local server (e.g. "npx serve ." or VS Code Live Server).';
+    showToast('Failed to load data.json', true);
+  }
+}
+
+// ── Render helpers ────────────────────────────────────────────────────────────
+function el(tag, attrs, html) {
+  var e = document.createElement(tag);
+  if (attrs) Object.keys(attrs).forEach(function(k) { e.setAttribute(k, attrs[k]); });
+  if (html !== undefined) e.innerHTML = html;
+  return e;
+}
+
+function inputRow(labelText, id, type, value, placeholder) {
+  var group = el('div', {class: 'form-group'});
+  group.innerHTML = '<label>' + labelText + '</label><input type="' + (type||'text') + '" id="' + id + '" value="' + escHtml(value||'') + '" placeholder="' + escHtml(placeholder||'') + '">';
+  return group;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Collect helpers ───────────────────────────────────────────────────────────
+function val(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
+function intVal(id) { return parseInt(val(id)) || 0; }
+
+// ── Render all sections ───────────────────────────────────────────────────────
+function renderAllSections() {
+  renderAbout();
+  renderServicesAbout();
+  renderTimeline('education');
+  renderTimeline('experience');
+  renderSkills();
+  renderServicesPage();
+  renderProjects();
+  renderBlog();
+}
+
+// ── ABOUT ─────────────────────────────────────────────────────────────────────
+function renderAbout() {
+  var a = portfolioData.about;
+  document.getElementById('about-name').value = a.name || '';
+  document.getElementById('about-title').value = a.title || '';
+  document.getElementById('about-email').value = a.email || '';
+  document.getElementById('about-phone').value = a.phone || '';
+  document.getElementById('about-phoneHref').value = a.phoneHref || '';
+  document.getElementById('about-location').value = a.location || '';
+  document.getElementById('about-birthday-datetime').value = (a.birthday && a.birthday.datetime) || '';
+  document.getElementById('about-birthday-display').value = (a.birthday && a.birthday.display) || '';
+  document.getElementById('about-avatar-fallback').value = (a.avatar && a.avatar.fallback) || '';
+  document.getElementById('about-avatar-webp').value = (a.avatar && a.avatar.webp) || '';
+  document.getElementById('about-avatar-alt').value = (a.avatar && a.avatar.alt) || '';
+
+  // Bio paragraphs
+  var bioCont = document.getElementById('bio-paragraphs');
+  bioCont.innerHTML = '';
+  (a.bio || []).forEach(function(p, i) {
+    bioCont.appendChild(bioParagraphCard(p, i));
+  });
+
+  // Social links
+  var socialCont = document.getElementById('social-links');
+  socialCont.innerHTML = '';
+  (a.social || []).forEach(function(s, i) {
+    socialCont.appendChild(socialLinkCard(s, i));
+  });
+}
+
+function bioParagraphCard(text, idx) {
+  var card = el('div', {class: 'card bio-item', 'data-bio-idx': idx});
+  card.innerHTML = '<textarea data-bio-text rows="3">' + escHtml(text) + '</textarea><button class="btn btn-danger btn-sm" onclick="removeBio(' + idx + ')">✕</button>';
+  return card;
+}
+
+function socialLinkCard(s, idx) {
+  var card = el('div', {class: 'card', 'data-social-idx': idx});
+  card.innerHTML = '<div class="row-3">'
+    + '<div class="form-group"><label>Name</label><input type="text" data-social-name value="' + escHtml(s.name||'') + '"></div>'
+    + '<div class="form-group"><label>URL</label><input type="url" data-social-url value="' + escHtml(s.url||'') + '"></div>'
+    + '<div class="form-group"><label>Ion-icon name</label><input type="text" data-social-icon value="' + escHtml(s.icon||'') + '"></div>'
+    + '</div>'
+    + '<button class="btn btn-danger btn-sm" style="margin-top:0.5rem" onclick="removeSocial(' + idx + ')">Remove</button>';
+  return card;
+}
+
+function addBioParagraph() {
+  if (!portfolioData) return;
+  portfolioData.about.bio.push('New paragraph…');
+  renderAbout();
+}
+function removeBio(idx) {
+  collectAbout();
+  portfolioData.about.bio.splice(idx, 1);
+  renderAbout();
+}
+function addSocialLink() {
+  if (!portfolioData) return;
+  portfolioData.about.social.push({name:'', url:'', icon:''});
+  renderAbout();
+}
+function removeSocial(idx) {
+  collectAbout();
+  portfolioData.about.social.splice(idx, 1);
+  renderAbout();
+}
+
+function collectAbout() {
+  var a = portfolioData.about;
+  a.name = val('about-name');
+  a.title = val('about-title');
+  a.email = val('about-email');
+  a.phone = val('about-phone');
+  a.phoneHref = val('about-phoneHref');
+  a.location = val('about-location');
+  a.birthday = { datetime: val('about-birthday-datetime'), display: val('about-birthday-display') };
+  a.avatar = { fallback: val('about-avatar-fallback'), webp: val('about-avatar-webp'), alt: val('about-avatar-alt') };
+  // bio
+  a.bio = Array.from(document.querySelectorAll('[data-bio-text]')).map(function(t) { return t.value.trim(); });
+  // social
+  var socialCards = document.querySelectorAll('[data-social-idx]');
+  a.social = Array.from(socialCards).map(function(card) {
+    return {
+      name: card.querySelector('[data-social-name]').value.trim(),
+      url: card.querySelector('[data-social-url]').value.trim(),
+      icon: card.querySelector('[data-social-icon]').value.trim()
+    };
+  });
+}
+
+// ── SERVICES (ABOUT) ─────────────────────────────────────────────────────────
+function renderServicesAbout() {
+  var cont = document.getElementById('services-about-items');
+  cont.innerHTML = '';
+  (portfolioData.services || []).forEach(function(s, i) {
+    cont.appendChild(serviceAboutCard(s, i));
+  });
+}
+
+function serviceAboutCard(s, idx) {
+  var card = el('div', {class: 'card', 'data-svc-idx': idx});
+  card.innerHTML = '<div class="card-header"><h3>Service ' + (idx+1) + '</h3><button class="btn btn-danger btn-sm" onclick="removeServiceAbout(' + idx + ')">Remove</button></div>'
+    + '<div class="row">'
+    + '<div class="form-group"><label>Title</label><input type="text" data-svc-title value="' + escHtml(s.title||'') + '"></div>'
+    + '<div class="form-group"><label>Icon path</label><input type="text" data-svc-icon value="' + escHtml(s.icon||'') + '"></div>'
+    + '</div>'
+    + '<div class="row">'
+    + '<div class="form-group"><label>Icon alt text</label><input type="text" data-svc-iconAlt value="' + escHtml(s.iconAlt||'') + '"></div>'
+    + '</div>'
+    + '<div class="form-group"><label>Description</label><textarea data-svc-desc rows="2">' + escHtml(s.description||'') + '</textarea></div>';
+  return card;
+}
+
+function addServiceAbout() {
+  collectServicesAbout();
+  portfolioData.services.push({title:'', icon:'', iconAlt:'', description:''});
+  renderServicesAbout();
+}
+function removeServiceAbout(idx) {
+  collectServicesAbout();
+  portfolioData.services.splice(idx, 1);
+  renderServicesAbout();
+}
+
+function collectServicesAbout() {
+  portfolioData.services = Array.from(document.querySelectorAll('[data-svc-idx]')).map(function(card) {
+    return {
+      title: card.querySelector('[data-svc-title]').value.trim(),
+      icon: card.querySelector('[data-svc-icon]').value.trim(),
+      iconAlt: card.querySelector('[data-svc-iconAlt]').value.trim(),
+      description: card.querySelector('[data-svc-desc]').value.trim()
+    };
+  });
+}
+
+// ── TIMELINE (education / experience) ────────────────────────────────────────
+function renderTimeline(type) {
+  var cont = document.getElementById(type + '-items');
+  cont.innerHTML = '';
+  (portfolioData[type] || []).forEach(function(item, i) {
+    cont.appendChild(timelineCard(item, i, type));
+  });
+}
+
+function timelineCard(item, idx, type) {
+  var card = el('div', {class: 'card', 'data-tl-idx': idx, 'data-tl-type': type});
+  card.innerHTML = '<div class="card-header"><h3>' + (type === 'education' ? 'Education' : 'Role') + ' ' + (idx+1) + '</h3><button class="btn btn-danger btn-sm" onclick="removeTimelineItem(\'' + type + '\',' + idx + ')">Remove</button></div>'
+    + '<div class="row">'
+    + '<div class="form-group"><label>Title / Role</label><input type="text" data-tl-title value="' + escHtml(item.title||'') + '"></div>'
+    + '<div class="form-group"><label>Period</label><input type="text" data-tl-period value="' + escHtml(item.period||'') + '" placeholder="e.g. Jan 2023 — Jan 2024"></div>'
+    + '</div>'
+    + '<div class="form-group"><label>Description</label><textarea data-tl-desc rows="3">' + escHtml(item.description||'') + '</textarea></div>';
+  return card;
+}
+
+function addTimelineItem(type) {
+  collectTimeline(type);
+  portfolioData[type].push({title:'', period:'', description:''});
+  renderTimeline(type);
+}
+function removeTimelineItem(type, idx) {
+  collectTimeline(type);
+  portfolioData[type].splice(idx, 1);
+  renderTimeline(type);
+}
+
+function collectTimeline(type) {
+  portfolioData[type] = Array.from(document.querySelectorAll('[data-tl-type="' + type + '"]')).map(function(card) {
+    return {
+      title: card.querySelector('[data-tl-title]').value.trim(),
+      period: card.querySelector('[data-tl-period]').value.trim(),
+      description: card.querySelector('[data-tl-desc]').value.trim()
+    };
+  });
+}
+
+// ── SKILLS ────────────────────────────────────────────────────────────────────
+function renderSkills() {
+  var cont = document.getElementById('skills-items');
+  cont.innerHTML = '';
+  (portfolioData.skills || []).forEach(function(s, i) {
+    cont.appendChild(skillCard(s, i));
+  });
+}
+
+function skillCard(s, idx) {
+  var card = el('div', {class: 'card', 'data-skill-idx': idx});
+  card.innerHTML = '<div class="card-header"><h3>Skill ' + (idx+1) + '</h3><button class="btn btn-danger btn-sm" onclick="removeSkill(' + idx + ')">Remove</button></div>'
+    + '<div class="row" style="align-items:end">'
+    + '<div class="form-group"><label>Skill name</label><input type="text" data-skill-name value="' + escHtml(s.name||'') + '"></div>'
+    + '<div class="form-group"><label>Level (0–100)</label>'
+    + '<div class="skill-level-row">'
+    + '<input type="number" data-skill-level min="0" max="100" value="' + (s.level||0) + '" oninput="updateSkillBar(this)">'
+    + '<div class="skill-level-bar"><div class="skill-level-bar-fill" style="width:' + (s.level||0) + '%"></div></div>'
+    + '</div></div>'
+    + '</div>';
+  return card;
+}
+
+function updateSkillBar(input) {
+  var bar = input.closest('[data-skill-idx]').querySelector('.skill-level-bar-fill');
+  if (bar) bar.style.width = Math.min(100, Math.max(0, parseInt(input.value)||0)) + '%';
+}
+
+function addSkill() {
+  collectSkills();
+  portfolioData.skills.push({name:'', level:70});
+  renderSkills();
+}
+function removeSkill(idx) {
+  collectSkills();
+  portfolioData.skills.splice(idx, 1);
+  renderSkills();
+}
+
+function collectSkills() {
+  portfolioData.skills = Array.from(document.querySelectorAll('[data-skill-idx]')).map(function(card) {
+    return {
+      name: card.querySelector('[data-skill-name]').value.trim(),
+      level: Math.min(100, Math.max(0, parseInt(card.querySelector('[data-skill-level]').value)||0))
+    };
+  });
+}
+
+// ── SERVICES PAGE ─────────────────────────────────────────────────────────────
+function renderServicesPage() {
+  var sp = portfolioData.servicesPage || {};
+  document.getElementById('services-page-intro').value = sp.intro || '';
+
+  // Cards
+  var cont = document.getElementById('services-page-cards');
+  cont.innerHTML = '';
+  (sp.cards || []).forEach(function(c, i) {
+    cont.appendChild(serviceCardEl(c, i));
+  });
+
+  // Ideal clients
+  var tagList = document.getElementById('ideal-clients-tags');
+  tagList.innerHTML = '';
+  (sp.idealClients || []).forEach(function(client, i) {
+    tagList.appendChild(clientTag(client, i));
+  });
+}
+
+function serviceCardEl(card, idx) {
+  var el2 = el('div', {class: 'card', 'data-svc-card-idx': idx});
+  el2.innerHTML = '<div class="card-header"><h3>Card ' + (idx+1) + '</h3><button class="btn btn-danger btn-sm" onclick="removeServiceCard(' + idx + ')">Remove</button></div>'
+    + '<div class="form-group"><label>Card Title</label><input type="text" data-svc-card-title value="' + escHtml(card.title||'') + '"></div>'
+    + '<div class="form-group"><label>Items (one per line)</label><textarea data-svc-card-items rows="5">' + escHtml((card.items||[]).join('\n')) + '</textarea></div>';
+  return el2;
+}
+
+function addServiceCard() {
+  collectServicesPage();
+  portfolioData.servicesPage.cards.push({title:'', items:[]});
+  renderServicesPage();
+}
+function removeServiceCard(idx) {
+  collectServicesPage();
+  portfolioData.servicesPage.cards.splice(idx, 1);
+  renderServicesPage();
+}
+
+function clientTag(text, idx) {
+  var tag = el('span', {class: 'tag', 'data-client-idx': idx});
+  tag.innerHTML = escHtml(text) + '<button onclick="removeIdealClient(' + idx + ')" title="Remove">×</button>';
+  return tag;
+}
+
+function addIdealClient() {
+  var input = document.getElementById('ideal-client-input');
+  var text = input.value.trim();
+  if (!text) return;
+  collectServicesPage();
+  portfolioData.servicesPage.idealClients.push(text);
+  input.value = '';
+  renderServicesPage();
+}
+
+function removeIdealClient(idx) {
+  collectServicesPage();
+  portfolioData.servicesPage.idealClients.splice(idx, 1);
+  renderServicesPage();
+}
+
+function collectServicesPage() {
+  var sp = portfolioData.servicesPage;
+  sp.intro = document.getElementById('services-page-intro').value.trim();
+  sp.cards = Array.from(document.querySelectorAll('[data-svc-card-idx]')).map(function(card) {
+    return {
+      title: card.querySelector('[data-svc-card-title]').value.trim(),
+      items: card.querySelector('[data-svc-card-items]').value.split('\n').map(function(s) { return s.trim(); }).filter(Boolean)
+    };
+  });
+  // idealClients are already in memory; only update from DOM if tags exist
+  var tags = document.querySelectorAll('[data-client-idx]');
+  if (tags.length > 0) {
+    sp.idealClients = Array.from(tags).map(function(t) {
+      // text content minus the × button text
+      return t.childNodes[0].textContent.trim();
+    });
+  }
+}
+
+// ── PROJECTS ──────────────────────────────────────────────────────────────────
+function renderProjects() {
+  var cont = document.getElementById('projects-items');
+  cont.innerHTML = '';
+  (portfolioData.projects || []).forEach(function(p, i) {
+    cont.appendChild(projectCard(p, i));
+  });
+}
+
+function projectCard(p, idx) {
+  var card = el('div', {class: 'card', 'data-proj-idx': idx});
+  card.innerHTML = '<div class="card-header"><h3>Project ' + (idx+1) + ' — ' + escHtml(p.title||'(untitled)') + '</h3><button class="btn btn-danger btn-sm" onclick="removeProject(' + idx + ')">Remove</button></div>'
+    + '<div class="row">'
+    + '<div class="form-group"><label>Title</label><input type="text" data-proj-title value="' + escHtml(p.title||'') + '"></div>'
+    + '<div class="form-group"><label>URL</label><input type="url" data-proj-url value="' + escHtml(p.url||'') + '"></div>'
+    + '</div>'
+    + '<div class="row">'
+    + '<div class="form-group"><label>Display Category</label><input type="text" data-proj-category value="' + escHtml(p.category||'') + '" placeholder="e.g. Applications"></div>'
+    + '<div class="form-group"><label>Filter Category (lowercase)</label><input type="text" data-proj-filterCategory value="' + escHtml(p.filterCategory||'') + '" placeholder="e.g. applications"></div>'
+    + '</div>'
+    + '<div class="row">'
+    + '<div class="form-group"><label>Image path (fallback)</label><input type="text" data-proj-image value="' + escHtml(p.image||'') + '"></div>'
+    + '<div class="form-group"><label>WebP base path (optional)</label><input type="text" data-proj-webp value="' + escHtml(p.webp||'') + '"></div>'
+    + '</div>'
+    + '<div class="form-group"><label>Alt text</label><input type="text" data-proj-alt value="' + escHtml(p.alt||'') + '"></div>';
+  return card;
+}
+
+function addProject() {
+  collectProjects();
+  portfolioData.projects.push({title:'', url:'', image:'', webp:'', alt:'', category:'', filterCategory:''});
+  renderProjects();
+}
+function removeProject(idx) {
+  collectProjects();
+  portfolioData.projects.splice(idx, 1);
+  renderProjects();
+}
+
+function collectProjects() {
+  portfolioData.projects = Array.from(document.querySelectorAll('[data-proj-idx]')).map(function(card) {
+    var obj = {
+      title: card.querySelector('[data-proj-title]').value.trim(),
+      url: card.querySelector('[data-proj-url]').value.trim(),
+      image: card.querySelector('[data-proj-image]').value.trim(),
+      alt: card.querySelector('[data-proj-alt]').value.trim(),
+      category: card.querySelector('[data-proj-category]').value.trim(),
+      filterCategory: card.querySelector('[data-proj-filterCategory]').value.trim()
+    };
+    var webp = card.querySelector('[data-proj-webp]').value.trim();
+    if (webp) obj.webp = webp;
+    return obj;
+  });
+}
+
+// ── BLOG ──────────────────────────────────────────────────────────────────────
+function renderBlog() {
+  var cont = document.getElementById('blog-items');
+  cont.innerHTML = '';
+  (portfolioData.blog || []).forEach(function(post, i) {
+    cont.appendChild(blogCard(post, i));
+  });
+}
+
+function blogCard(post, idx) {
+  var card = el('div', {class: 'card', 'data-blog-idx': idx});
+  card.innerHTML = '<div class="card-header"><h3>Post ' + (idx+1) + ' — ' + escHtml((post.title||'(untitled)').substring(0,60)) + '</h3><button class="btn btn-danger btn-sm" onclick="removeBlogPost(' + idx + ')">Remove</button></div>'
+    + '<div class="form-group"><label>Title</label><input type="text" data-blog-title value="' + escHtml(post.title||'') + '"></div>'
+    + '<div class="form-group"><label>URL</label><input type="url" data-blog-url value="' + escHtml(post.url||'') + '"></div>'
+    + '<div class="row">'
+    + '<div class="form-group"><label>Category</label><input type="text" data-blog-category value="' + escHtml(post.category||'') + '" placeholder="e.g. web development"></div>'
+    + '<div class="form-group"><label>Date (display, e.g. Jul 05, 2025)</label><input type="text" data-blog-date value="' + escHtml(post.date||'') + '"></div>'
+    + '</div>'
+    + '<div class="form-group"><label>Datetime (ISO, e.g. 2025-07-05)</label><input type="text" data-blog-datetime value="' + escHtml(post.datetime||'') + '"></div>'
+    + '<div class="row">'
+    + '<div class="form-group"><label>Image path (fallback)</label><input type="text" data-blog-image value="' + escHtml(post.image||'') + '"></div>'
+    + '<div class="form-group"><label>WebP base path (optional)</label><input type="text" data-blog-webp value="' + escHtml(post.webp||'') + '"></div>'
+    + '</div>'
+    + '<div class="form-group"><label>Alt text</label><input type="text" data-blog-alt value="' + escHtml(post.alt||'') + '"></div>'
+    + '<div class="form-group"><label>Excerpt</label><textarea data-blog-excerpt rows="2">' + escHtml(post.excerpt||'') + '</textarea></div>';
+  return card;
+}
+
+function addBlogPost() {
+  collectBlog();
+  portfolioData.blog.push({title:'', url:'', image:'', webp:'', alt:'', category:'', date:'', datetime:'', excerpt:''});
+  renderBlog();
+}
+function removeBlogPost(idx) {
+  collectBlog();
+  portfolioData.blog.splice(idx, 1);
+  renderBlog();
+}
+
+function collectBlog() {
+  portfolioData.blog = Array.from(document.querySelectorAll('[data-blog-idx]')).map(function(card) {
+    var obj = {
+      title: card.querySelector('[data-blog-title]').value.trim(),
+      url: card.querySelector('[data-blog-url]').value.trim(),
+      image: card.querySelector('[data-blog-image]').value.trim(),
+      alt: card.querySelector('[data-blog-alt]').value.trim(),
+      category: card.querySelector('[data-blog-category]').value.trim(),
+      date: card.querySelector('[data-blog-date]').value.trim(),
+      datetime: card.querySelector('[data-blog-datetime]').value.trim(),
+      excerpt: card.querySelector('[data-blog-excerpt]').value.trim()
+    };
+    var webp = card.querySelector('[data-blog-webp]').value.trim();
+    if (webp) obj.webp = webp;
+    return obj;
+  });
+}
+
+// ── Collect all ───────────────────────────────────────────────────────────────
+function collectAll() {
+  collectAbout();
+  collectServicesAbout();
+  collectTimeline('education');
+  collectTimeline('experience');
+  collectSkills();
+  collectServicesPage();
+  collectProjects();
+  collectBlog();
+}
+
+// ── Export JSON ───────────────────────────────────────────────────────────────
+function exportJSON() {
+  if (!portfolioData) { showToast('No data loaded', true); return; }
+  collectAll();
+  var json = JSON.stringify(portfolioData, null, 2);
+  var blob = new Blob([json], {type: 'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'data.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('data.json exported! Replace the file in your project root.');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
