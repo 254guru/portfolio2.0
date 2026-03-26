@@ -130,6 +130,8 @@ function renderProjects(projects) {
   const list = document.getElementById('project-list');
   if (!list) return;
   list.innerHTML = projects.map(function (p) {
+    var image = normalizeImageUrl(p.image);
+    var srcset = buildSrcset(p.image, p.webp);
     return `<li class="project-item  active" data-filter-item data-category="${p.filterCategory}">
             <a href="${p.url}" target="_blank">
               <figure class="project-img">
@@ -150,6 +152,8 @@ function renderBlog(blog) {
   const list = document.getElementById('blog-posts-list');
   if (!list) return;
   list.innerHTML = blog.map(function (post) {
+    var image = normalizeImageUrl(post.image);
+    var srcset = buildSrcset(post.image, post.webp);
     return `<li class="blog-post-item">
             <a href="${post.url}" target="_blank">
               <figure class="blog-banner-box">
@@ -191,3 +195,24 @@ async function loadPortfolio() {
 }
 
 loadPortfolio();
+
+function normalizeImageUrl(url) {
+  if (!url) return '';
+  return encodeURI(String(url).trim());
+}
+
+function normalizeWebpUrl(image, webp) {
+  var w = (webp || '').trim();
+  if (!w && image) w = String(image).trim().replace(/\.[^.]+$/, '.webp');
+  if (w && !/\.webp($|\?)/i.test(w)) w += '.webp';
+  return encodeURI(w);
+}
+
+function buildSrcset(image, webp) {
+  var jpg = normalizeImageUrl(image);
+  var wbp = normalizeWebpUrl(image, webp);
+  var out = [];
+  if (wbp) out.push(wbp + ' 1x');
+  if (jpg) out.push(jpg + ' 1x');
+  return out.join(', ');
+}
