@@ -77,6 +77,51 @@
       flex-shrink: 0;
     }
 
+    /* compact actions hamburger (shows on small screens) */
+    .actions-hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      color: var(--text-primary);
+      align-items: center;
+      justify-content: center;
+    }
+    .actions-hamburger ion-icon {
+      font-size: 20px;
+      color: var(--accent);
+      display: block;
+      line-height: 1;
+    }
+
+    .header-menu {
+      position: absolute;
+      right: 1rem;
+      top: calc(100% + 8px);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 0.35rem;
+      min-width: 160px;
+      display: none;
+      box-shadow: var(--shadow);
+      z-index: 300;
+    }
+    .header-menu.open { display: block; }
+    .header-menu a {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      padding: 0.5rem 0.6rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .header-menu a:hover { background: var(--accent-alpha); color: var(--accent); }
+
     /* ── Hamburger ───────────────────────────────────────────────────────────── */
     .hamburger {
       display: none;
@@ -420,8 +465,12 @@
     }
 
     @media (max-width: 768px) {
-      .hamburger { display: flex; }
+      /* Show actions hamburger and hide header buttons on small screens */
+      .hamburger { display: none; }
+      .actions-hamburger { display: flex; }
+      .header-actions .btn { display: none; }
 
+      /* On small screens the sidebar is hidden and replaced by a top mobile nav */
       nav.sidebar {
         position: fixed;
         left: calc(-1 * var(--sidebar-width));
@@ -440,12 +489,46 @@
       header p  { display: none; }
 
       .header-actions { gap: 0.5rem; }
+      .header-actions { gap: 0.5rem; flex-wrap: wrap; }
       .header-actions .btn { padding: 0.4rem 0.65rem; font-size: 0.78rem; }
 
       #session-timer { display: none; }
 
       main { padding: 1rem; }
     }
+
+    /* Bottom nav used instead of sidebar on small devices (icon-only) */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.02), var(--bg-surface));
+      border-top: 1px solid var(--border);
+      padding: calc(0.5rem + env(safe-area-inset-bottom, 0)) 0  calc(0.5rem + env(safe-area-inset-bottom, 0));
+      z-index: 200;
+      display: flex;
+      justify-content: center;
+      box-shadow: var(--shadow);
+    }
+    .bottom-nav .nav-inner { display: flex; gap: 0.25rem; align-items: center; }
+    .bottom-nav a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: 10px;
+      background: transparent;
+      transition: all var(--transition);
+    }
+    .bottom-nav a ion-icon { font-size: 20px; }
+    .bottom-nav a.active,
+    .bottom-nav a:hover { color: var(--accent); background: var(--accent-alpha); }
+    .bottom-nav .sr { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
     @media (max-width: 540px) {
       .row   { grid-template-columns: 1fr; }
@@ -499,8 +582,19 @@
     <button class="btn btn-secondary" onclick="loadData()">↺ Reload</button>
     <button class="btn btn-success" onclick="exportJSON()">⬇ Export <span class="btn-ext">data.json</span></button>
     <button class="btn btn-danger" onclick="logout()">⏏ Logout</button>
+    <button class="actions-hamburger" id="actions-hamburger" aria-label="Open actions menu">
+      <ion-icon name="menu-outline"></ion-icon>
+    </button>
+    <div class="header-menu" id="header-menu" role="menu" aria-hidden="true">
+      <a href="#" id="menu-reload" role="menuitem">↺ Reload</a>
+      <a href="#" id="menu-export" role="menuitem">⬇ Export data.json</a>
+      <a href="#" id="menu-logout" role="menuitem">⏏ Logout</a>
+    </div>
   </div>
 </header>
+ 
+<!-- Bottom icon nav (shown on small screens) -->
+<nav class="bottom-nav" id="bottom-nav" aria-label="Admin navigation"></nav>
 
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 <div class="container">
@@ -894,6 +988,101 @@ document.querySelectorAll('#nav-links a').forEach(function(link) {
     document.getElementById('section-' + this.dataset.section).classList.add('active');
   });
 });
+
+// ── Mobile nav: clone sidebar links into a compact top nav on small screens
+(function setupBottomNav() {
+  var sidebarLinks = document.getElementById('nav-links');
+  var bottomNav = document.getElementById('bottom-nav');
+  if (!sidebarLinks || !bottomNav) return;
+
+  // map section -> ionicon name
+  var iconMap = {
+    'about': 'person-outline',
+    'services-about': 'construct-outline',
+    'education': 'school-outline',
+    'experience': 'briefcase-outline',
+    'skills': 'bar-chart-outline',
+    'services-page': 'layers-outline',
+    'projects': 'apps-outline',
+    'blog': 'newspaper-outline'
+  };
+
+  var links = Array.from(sidebarLinks.querySelectorAll('a'));
+  var inner = document.createElement('div'); inner.className = 'nav-inner';
+
+  links.forEach(function(a) {
+    var sec = a.dataset.section;
+    var label = (a.textContent || sec || '').trim();
+    var icon = iconMap[sec] || 'ellipse-outline';
+    var link = document.createElement('a');
+    link.href = '#';
+    link.setAttribute('data-section', sec);
+    link.setAttribute('aria-label', label);
+    link.innerHTML = '<ion-icon name="' + icon + '"></ion-icon><span class="sr">' + label + '</span>';
+    if (a.classList.contains('active')) link.classList.add('active');
+    inner.appendChild(link);
+  });
+
+  bottomNav.appendChild(inner);
+
+  function onClick(e) {
+    e.preventDefault();
+    var sec = this.dataset.section;
+    document.querySelectorAll('#nav-links a, #bottom-nav a').forEach(function(x) { x.classList.remove('active'); });
+    // sync both navs
+    var sourceLink = document.querySelector('#nav-links a[data-section="' + sec + '"]');
+    if (sourceLink) sourceLink.classList.add('active');
+    this.classList.add('active');
+    document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+    var target = document.getElementById('section-' + sec);
+    if (target) target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    var overlay = document.getElementById('sidebar-overlay'); if (overlay) overlay.classList.remove('active');
+  }
+
+  bottomNav.querySelectorAll('a').forEach(function(x) { x.addEventListener('click', onClick); });
+
+  function updateVisibility() {
+    var sidebar = document.querySelector('nav.sidebar');
+    if (window.innerWidth < 768) {
+      if (sidebar) sidebar.style.display = 'none';
+      bottomNav.style.display = 'flex';
+    } else {
+      if (sidebar) sidebar.style.display = '';
+      bottomNav.style.display = 'none';
+    }
+  }
+
+  updateVisibility();
+  window.addEventListener('resize', updateVisibility);
+})();
+
+// ── Header actions hamburger menu (mobile): move Reload/Export/Logout into menu
+(function setupHeaderMenu() {
+  var btn = document.getElementById('actions-hamburger');
+  var menu = document.getElementById('header-menu');
+  if (!btn || !menu) return;
+
+  function openMenu() { menu.classList.add('open'); menu.setAttribute('aria-hidden','false'); }
+  function closeMenu() { menu.classList.remove('open'); menu.setAttribute('aria-hidden','true'); }
+
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (menu.classList.contains('open')) closeMenu(); else openMenu();
+  });
+
+  // Wire actions
+  var mReload = document.getElementById('menu-reload');
+  var mExport = document.getElementById('menu-export');
+  var mLogout = document.getElementById('menu-logout');
+  if (mReload) mReload.addEventListener('click', function(e){ e.preventDefault(); closeMenu(); loadData(); });
+  if (mExport) mExport.addEventListener('click', function(e){ e.preventDefault(); closeMenu(); exportJSON(); });
+  if (mLogout) mLogout.addEventListener('click', function(e){ e.preventDefault(); closeMenu(); logout(); });
+
+  // close on outside click
+  document.addEventListener('click', function(e){ if (!menu.contains(e.target) && e.target !== btn) closeMenu(); }, {passive:true});
+  window.addEventListener('resize', closeMenu);
+})();
 
 // ── Toast ────────────────────────────────────────────────────────────────────
 function showToast(msg, isError) {
@@ -1439,5 +1628,7 @@ function exportJSON() {
 // loadData() is called automatically after successful login (see attemptLogin)
 // and can also be triggered by the ↺ Reload button once authenticated.
 </script>
+  <script type="module" defer src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule defer src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
